@@ -1,0 +1,526 @@
+﻿@page "/shopitemmanagement/print"
+@inject NavigationManager NavigationManager
+@layout PrintLayout
+@using Microsoft.AspNetCore.WebUtilities;
+@using System;
+@using Microsoft.JSInterop
+@using System.Linq
+
+@using System.Data;
+@using System.Data.SqlClient
+@inject NavigationManager Navigation
+
+@inject IJSRuntime JSRuntime
+@using Microsoft.AspNetCore.Components.Web
+@using Append.Blazor.Printing
+@inject IPrintingService PrintingService
+
+<!DOCTYPE html>
+<html lang="en">
+<style>
+</style>
+<style type="text/css">
+
+
+
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0px;
+        gap: 77px;
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        font-weight: 400;
+        color: rgb(16, 53, 100);
+        margin: 0%;
+        background-color: #f7fcff;
+    }
+
+    p {
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 16px;
+        font-size: 10px;
+        margin: 0;
+        width: fit-content;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+        gap: 24px;
+        margin-top: 20px;
+        width: 466px;
+        height: 648.75px;
+        border: 1px #080B4B;
+        background-color: #eff7ff;
+    }
+
+   
+
+    .head {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0px;
+        width: 100%;
+    }
+
+    .text {
+        font-weight: 600;
+        font-style: normal;
+        font-family: 'DM Sans';
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 12px;
+        color: #0D13C1;
+    }
+
+    .line {
+        width: 100%;
+        height: 2px;
+        background-color: #0D13C1;
+    }
+
+    .address {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0px;
+        gap: 168px;
+    }
+
+    .seperator {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    form {
+        display: block;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+    }
+
+
+    .form {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0px;
+        width: 100%;
+        height: auto;
+        font-size: 10px;
+        color: #0D13C1;
+    }
+
+    .title {
+        width: fit-content;
+        height: 18px;
+        color: #0D13C1;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 10px;
+        margin: 0%;
+    }
+
+    .right {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        align-items: flex-end;
+    }
+
+    .left {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        align-items: flex-end;
+    }
+
+    input {
+        border-radius: 3px;
+        border-color: white;
+        border-style: none;
+        background-color: #d8d8d8;
+        max-width: 120px;
+    }
+
+    .table {
+        width: 466px;
+        height: 412px;
+        background: #D9D9D9;
+        border-radius: 4px;
+    }
+
+    .footer {
+        background: #080B4B;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+        .footer p {
+            color: #d8d8d8;
+        }
+
+    table {
+        font-size: 75%;
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 2px;
+    }
+
+    th, td {
+        border-width: 1px;
+        padding: 0.5em;
+        position: relative;
+        text-align: left;
+    }
+
+    th, td {
+        border-radius: 0.25em;
+        border-style: solid;
+    }
+
+    th {
+        background: #EEE;
+        border-color: #BBB;
+        width: 80px;
+        height: 40px;
+    }
+
+    td {
+        border-color: #DDD;
+    }
+</style>
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>bill</title>
+
+</head>
+<body>
+    <div class="container">
+        <div class="head">
+            <img src="unnamed.png"  width="400px" height="100px" alt="logo">
+
+        </div>
+        <div class="seperator">
+
+            <div class="address">
+                <div><p>Building num - No 240, Kasthuriar Road,Jaffna</p></div>
+                <div><p>0212214801 / 07777888215</p></div>
+            </div>
+            <div class="line">
+            </div>
+        </div>
+
+        <p class="title">Shree Diamond House</p>
+
+
+
+        <form action="">
+            <div class="form">
+                @foreach (var item in filteredItems)
+                {
+                    var currentItem = item;
+                    <div class="left">
+                        <div>
+                            <label for="name">Date:</label>
+                            <input type="name" @bind="@item.DateTime">
+                        </div>
+
+                        <div>
+                            <label for="Name">Name:</label>
+                            <input type="name" @bind="@item.CName">
+                        </div>
+
+                        <div>
+                            <label for="item">Item:</label>
+                            <input type="item" @bind="@item.Items">
+                        </div>
+
+                        <div>
+                            <label for="Name">weight:</label>
+                            <input type="weight" @bind="@item.Weight">
+                        </div>
+                    </div>
+
+                    <div class="right">
+                        <div>
+                            <label for="Karat">Karat:</label>
+                            <input type="name" @bind="@item.Karat">
+                        </div>
+
+                        <div>
+                            <label for="no">No:</label>
+                            <input type="no" @bind="@item.No">
+                        </div>
+
+
+                    </div>
+                }
+
+
+            </div>
+        </form>
+        <div>
+            @foreach (var item in filteredItems)
+            {
+                var currentItem = item;
+                <table>
+                    <tr>
+                        <th><span contenteditable>Gold</span></th>
+                        <td><span contenteditable>@item.Gold</span></td>
+                    </tr>
+                    <tr>
+                        <th><span contenteditable>Palladium</span></th>
+                        <td><span contenteditable>@item.Palladium</span></td>
+                    </tr>
+                    <tr>
+                        <th><span contenteditable>Silver</span></th>
+                        <td><span contenteditable>@item.Silver</span></td>
+                    </tr>
+                    <tr>
+                        <th><span contenteditable>Copper</span></th>
+                        <td><span contenteditable>@item.Copper</span></td>
+                    </tr>
+                    <tr>
+                        <th><span contenteditable>Zinc</span></th>
+                        <td><span contenteditable>@item.Zinc</span></td>
+                    </tr>
+                    <tr>
+                        <th><span contenteditable>Cadmium</span></th>
+                        <td><span contenteditable>@item.Cadmium</span></td>
+                    </tr>
+                </table>
+            }
+        </div>
+
+        <div class="footer">
+            <p>ThankYou Come Again</p>
+        </div>
+    </div>
+</body>
+</html>
+
+<button class="btn btn-primary" @onclick="() => PrintItem()">Print</button>
+<button class="btn btn-light" @onclick="() => Back()">Back</button>
+
+
+@code {
+    private string myValue = "Default Value";
+    private int itemId;
+    public string connectionString = "Data Source=DESKTOP-PPDFD4L;Initial Catalog=GoldBlazor;Integrated Security=True";
+    private List<StoreItem> items;
+    private List<StoreItem> filteredItems;
+    private string searchText;
+    private DateTime? filterDate;
+    private bool isDeleted = false;
+
+    private List<StoreItem> records;
+
+    protected override void OnInitialized()
+    {
+        var uri = Navigation.ToAbsoluteUri(NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("id", out var id))
+        {
+            var itemId = Convert.ToInt32(id);
+            filteredItems = GetRecordsById(itemId);
+        }
+
+    }
+
+    private List<StoreItem> GetRecordsById(int id)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            using (SqlCommand command = new SqlCommand("GetRecordById", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@ID", id);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    List<StoreItem> result = new List<StoreItem>();
+
+                    while (reader.Read())
+                    {
+                        // Populate your model object with data from the reader
+                        StoreItem model = new StoreItem();
+
+                        model.ID = reader.GetInt32("ID");
+                        model.CName = reader.GetString("CName");
+                        model.Items = reader.GetString("Items");
+                        model.No = reader.GetString("No");
+                        model.Weight = reader.GetDecimal("Weight");
+                        model.Karat = reader.GetDecimal("Karat");
+                        model.DateTime = reader.GetDateTime("DateTime");
+                        model.Gold = reader.GetDecimal("Gold");
+                        model.Palladium = reader.GetDecimal("Palladium");
+                        model.Silver = reader.GetDecimal("Silver");
+                        model.Copper = reader.GetDecimal("Copper");
+                        model.Zinc = reader.GetDecimal("Zinc");
+                        model.Cadmium = reader.GetDecimal("Cadmium");
+                        model.Au = reader.GetDecimal("Au");
+                        model.Pi = reader.GetDecimal("Pi");
+                        model.Ag = reader.GetDecimal("Ag");
+                        model.Cu = reader.GetDecimal("Cu");
+                        model.Zn = reader.GetDecimal("Zn");
+                        model.Cd = reader.GetDecimal("Cd");
+                        // ...
+
+                        result.Add(model);
+                    }
+
+                    return result;
+
+                }
+            }
+        }
+    }
+
+
+    private class StoreItem
+    {
+        public int ID { get; set; }
+        public string? CName { get; set; }
+        public string? Items { get; set; }
+        public string? No { get; set; }
+        public decimal Weight { get; set; }
+        public decimal Karat { get; set; }
+        public DateTime DateTime { get; set; }
+        public decimal Gold { get; set; }
+        public decimal Palladium { get; set; }
+        public decimal Silver { get; set; }
+        public decimal Copper { get; set; }
+        public decimal Zinc { get; set; }
+        public decimal Cadmium { get; set; }
+        public decimal Au { get; set; }
+        public decimal Pi { get; set; }
+        public decimal Ag { get; set; }
+        public decimal Cu { get; set; }
+        public decimal Zn { get; set; }
+        public decimal Cd { get; set; }
+    }
+
+
+    //private void FilterRecords()
+    //{
+    //    filteredItems = items.Where(item =>
+    //        (string.IsNullOrEmpty(searchText) || item.CName.Contains(searchText)) &&
+    //        (filterDate == null || item.DateTime.Date == filterDate.Value.Date))
+    //        .ToList();
+    //}
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    await GetAllRecords();
+    //}
+    //private async Task GetAllRecords()
+    //{
+    //    // Replace "YourDatabaseConnection" with your actual database connection string
+    //    using (var connection = new SqlConnection(connectionString))
+    //    {
+    //        await connection.OpenAsync();
+
+    //        using (var command = new SqlCommand("GetAllRecords", connection))
+    //        {
+    //            command.CommandType = CommandType.StoredProcedure;
+
+    //            using (var reader = await command.ExecuteReaderAsync())
+    //            {
+    //                items = new List<StoreItem>();
+
+    //                while (await reader.ReadAsync())
+    //                {
+    //                    var item = new StoreItem
+    //                        {
+    //                            ID = reader.GetInt32("ID"),
+    //                            CName = reader.GetString("CName"),
+    //                            Items = reader.GetString("Items"),
+    //                            No = reader.GetString("No"),
+    //                            Weight = reader.GetDecimal("Weight"),
+    //                            Karat = reader.GetDecimal("Karat"),
+    //                            DateTime = reader.GetDateTime("DateTime"),
+    //                            Gold = reader.GetDecimal("Gold"),
+    //                            Palladium = reader.GetDecimal("Palladium"),
+    //                            Silver = reader.GetDecimal("Silver"),
+    //                            Copper = reader.GetDecimal("Copper"),
+    //                            Zinc = reader.GetDecimal("Zinc"),
+    //                            Cadmium = reader.GetDecimal("Cadmium"),
+    //                            Au = reader.GetDecimal("Au"),
+    //                            Pi = reader.GetDecimal("Pi"),
+    //                            Ag = reader.GetDecimal("Ag"),
+    //                            Cu = reader.GetDecimal("Cu"),
+    //                            Zn = reader.GetDecimal("Zn"),
+    //                            Cd = reader.GetDecimal("Cd")
+    //                        };
+
+    //                    items.Add(item);
+    //                }
+    //            }
+    //        }
+    //    }
+    //    ApplyFilters();
+
+    //}
+
+    //private void ClearFilters()
+    //{
+    //    searchText = string.Empty;
+    //    filterDate = null;
+    //    FilterRecords();
+    //}
+    //private void ApplyFilters()
+    //{
+    //    filteredItems = items;
+
+    //    if (!string.IsNullOrWhiteSpace(searchText))
+    //    {
+    //        filteredItems = filteredItems.Where(item =>
+    //            item.CName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+    //            item.Items.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+    //            item.No.ToString().Contains(searchText, StringComparison.OrdinalIgnoreCase)
+    //        ).ToList();
+    //    }
+
+    //    if (filterDate.HasValue)
+    //    {
+    //        filteredItems = filteredItems.Where(item =>
+    //            item.DateTime.Date == filterDate.Value.Date
+    //        ).ToList();
+    //    }
+    //}
+    [Inject]
+    private IJSRuntime JS { get; set; }
+    private async Task PrintItem()
+    {
+
+        // await JS.InvokeAsync<object>("open", "/shopitemmanagement/print", "_blank");
+        await JS.InvokeVoidAsync("print");
+    }
+    private void Back()
+    {
+        Navigation.NavigateTo("/shopitemmanagement");
+    }
+}

@@ -1,0 +1,70 @@
+﻿@page "/"
+@inherits LayoutComponentBase
+
+<style>
+    h1 {
+        text-align: left;
+        color: #007bff;
+        font-family: Arial, sans-serif;
+        font-size: 30px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .rectangle-box {
+        width: 200px;
+        height: 100px;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .count {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+</style>
+
+
+
+
+    <h1>Shree Diamond House</h1>
+
+
+
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="rectangle-box">
+                <i class="icon fas fa-users"></i>
+                <span class="count">@customerCount</span>
+                <span>Customers</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="rectangle-box">
+                <i class="icon fas fa-chart-line"></i>
+                <span class="count">@goldReportsCount</span>
+                <span>Gold Reports</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    private int customerCount = 100; // Replace with the actual count of customers
+    private int goldReportsCount = 50; // Replace with the actual count of gold reports
+}

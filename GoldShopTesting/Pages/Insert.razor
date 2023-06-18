@@ -1,0 +1,272 @@
+﻿@page "/shopitemmanagement/newbill"
+@using Microsoft.JSInterop
+@using System.Linq
+
+@using System.Data;
+@using System.Data.SqlClient
+@inject NavigationManager Navigation
+
+@inject IJSRuntime JSRuntime
+@using Microsoft.AspNetCore.Components.Web
+@using Append.Blazor.Printing
+@inject IPrintingService PrintingService
+
+
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Invoice</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="invoice.css" />
+   
+</head>
+
+<h3>Gold Testing Report</h3>
+
+<br/>
+
+<!-- Input fields for adding a new item -->
+<form class="container">
+    <div class="form-group row">
+        <label for="cname" class="col-sm-2 col-form-label">Customer Name:</label>
+        <div class="col-sm-10">
+            <input id="cname" type="text" class="form-control" @bind="@newItem.CName" required />
+            <div class="invalid-feedback">
+                Please enter a valid CName.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="items" class="col-sm-2 col-form-label">Items:</label>
+        <div class="col-sm-10">
+            <input id="items" type="text" class="form-control" @bind="@newItem.Items" required />
+            <div class="invalid-feedback">
+                Please enter valid Items.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="no" class="col-sm-2 col-form-label">No:</label>
+        <div class="col-sm-10">
+            <input id="no" type="text" class="form-control" @bind="@newItem.No" required />
+            <div class="invalid-feedback">
+                Please enter a valid No.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="weight" class="col-sm-2 col-form-label">Weight:</label>
+        <div class="col-sm-10">
+            <input id="weight" type="number" class="form-control" @bind="@newItem.Weight" step="0.01" required />
+            <div class="invalid-feedback">
+                Please enter a valid Weight.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="karat" class="col-sm-2 col-form-label">Karat:</label>
+        <div class="col-sm-10">
+            <input id="karat" type="number" class="form-control" @bind="@newItem.Karat" step="0.01" required />
+            <div class="invalid-feedback">
+                Please enter a valid Karat.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="datetime" class="col-sm-2 col-form-label">DateTime:</label>
+        <div class="col-sm-10">
+            <input id="datetime" type="datetime-local" class="form-control" @bind="@newItem.CurrentDateTime" />
+            <div class="invalid-feedback">
+                Please enter a valid DateTime.
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="gold">Gold:</label>
+                <input id="gold" type="number" class="form-control" @bind="@newItem.Gold" step="0.01" />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="au">Au:</label>
+                <input id="au" type="number" class="form-control" @bind="@newItem.Au" step="0.01" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="silver">Silver:</label>
+                <input id="silver" type="number" class="form-control" @bind="@newItem.Silver" step="0.01" />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="ag">Ag:</label>
+                <input id="ag" type="number" class="form-control" @bind="@newItem.Ag" step="0.01" />
+            </div>
+        </div>
+       
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="zinc">Zinc:</label>
+                <input id="zinc" type="number" class="form-control" @bind="@newItem.Zinc" step="0.01" />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="zn">Zn:</label>
+                <input id="zn" type="number" class="form-control" @bind="@newItem.Zn" step="0.01" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+       
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="palladium">Palladium:</label>
+                <input id="palladium" type="number" class="form-control" @bind="@newItem.Palladium" step="0.01" />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="pi">Pi:</label>
+                <input id="pi" type="number" class="form-control" @bind="@newItem.Pi" step="0.01" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="copper">Copper:</label>
+                <input id="copper" type="number" class="form-control" @bind="@newItem.Copper" step="0.01" />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="cu">Cu:</label>
+                <input id="cu" type="number" class="form-control" @bind="@newItem.Cu" step="0.01" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="cadmium">Cadmium:</label>
+                <input id="cadmium" type="number" class="form-control" @bind="@newItem.Cadmium" step="0.01" />
+            </div>
+        </div>
+        
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="cd">Cd:</label>
+                <input id="cd" type="number" class="form-control" @bind="@newItem.Cd" step="0.01" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-sm-12">
+            <button type="button" class="btn btn-primary" @onclick="InsertData">Add Item</button>
+        </div>
+    </div>
+</form>
+
+<br />
+<br />
+<br />
+<br />
+
+
+@code{
+    public string connectionString = "Data Source=DESKTOP-PPDFD4L;Initial Catalog=GoldBlazor;Integrated Security=True";
+   
+
+    protected override void OnInitialized()
+    {
+        newItem.CurrentDateTime = DateTime.Now;
+    }
+    
+    private class StoreItem
+    {
+        
+        public int ID { get; set; }
+        public string? CName { get; set; }
+        public string? Items { get; set; }
+        public string? No { get; set; }
+        public decimal Weight { get; set; }
+        public decimal Karat { get; set; }
+        public DateTime CurrentDateTime { get; set; }
+        public decimal Gold { get; set; }
+        public decimal Palladium { get; set; }
+        public decimal Silver { get; set; }
+        public decimal Copper { get; set; }
+        public decimal Zinc { get; set; }
+        public decimal Cadmium { get; set; }
+        public decimal Au { get; set; }
+        public decimal Pi { get; set; }
+        public decimal Ag { get; set; }
+        public decimal Cu { get; set; }
+        public decimal Zn { get; set; }
+        public decimal Cd { get; set; }
+    }
+    private StoreItem newItem = new StoreItem();
+   
+   
+    private void InsertData()
+    {
+
+
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            SqlCommand command = new SqlCommand("InsertData", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            // Set the parameter values
+            command.Parameters.AddWithValue("@CName", newItem.CName);
+            command.Parameters.AddWithValue("@Items", newItem.Items);
+            command.Parameters.AddWithValue("@No", newItem.No);
+            command.Parameters.AddWithValue("@Weight", newItem.Weight);
+            command.Parameters.AddWithValue("@Karat", newItem.Karat);
+            command.Parameters.AddWithValue("@DateTime", newItem.CurrentDateTime);
+            command.Parameters.AddWithValue("@Gold", newItem.Gold);
+            command.Parameters.AddWithValue("@Palladium", newItem.Palladium);
+            command.Parameters.AddWithValue("@Silver", newItem.Silver);
+            command.Parameters.AddWithValue("@Copper", newItem.Copper);
+            command.Parameters.AddWithValue("@Zinc", newItem.Zinc);
+            command.Parameters.AddWithValue("@Cadmium", newItem.Cadmium);
+            command.Parameters.AddWithValue("@Au", newItem.Au);
+            command.Parameters.AddWithValue("@Pi", newItem.Pi);
+            command.Parameters.AddWithValue("@Ag", newItem.Ag);
+            command.Parameters.AddWithValue("@Cu", newItem.Cu);
+            command.Parameters.AddWithValue("@Zn", newItem.Zn);
+            command.Parameters.AddWithValue("@Cd", newItem.Cd);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+
+            Navigation.NavigateTo("/shopitemmanagement");
+
+        }
+    }
+
+}

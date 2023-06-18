@@ -1,0 +1,265 @@
+﻿@page "/customerRecord"
+@using Microsoft.JSInterop
+@using System.Linq
+
+@using System.Data;
+@using System.Data.SqlClient
+@inject NavigationManager Navigation
+
+@inject IJSRuntime JSRuntime
+@using Microsoft.AspNetCore.Components.Web
+@using Append.Blazor.Printing
+@inject IPrintingService PrintingService
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Invoice</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="invoice.css" />
+
+</head>
+
+<h3>Customer Record</h3>
+
+<button class="btn btn-primary btn-sm" @onclick="() => NewCustomer()">New Customer</button>
+<br />
+<br />
+
+<div class="col-md-6">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search" @bind="@searchText">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" @onclick="ApplyFilters">Search</button>
+        </div>
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="input-group mb-3">
+        <input type="date" class="form-control" @bind="@filterDate" />
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" @onclick="ApplyFilters">Filter</button>
+            <button class="btn btn-outline-secondary" type="button" @onclick="ClearFilters">Clear</button>
+        </div>
+    </div>
+</div>
+@if (isDeleted)
+{
+    <div class="alert alert-success" role="alert">
+        Record deleted successfully!
+    </div>
+}
+
+@if (filteredItems != null)
+{
+    if (filteredItems.Count > 0)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>CName</th>
+                    <th>CPhone</th>
+                    <th>CPhoneLand</th>
+                    <th>Address</th>
+                    <th>Email</th>
+                    <th>DateTime</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in filteredItems)
+                {
+                    var currentItem = item;
+                    <tr>
+                        <td>@item.ID</td>
+                        <td>@item.CName</td>
+                        <td>@item.CPhone</td>
+                        <td>@item.CPhoneLand</td>
+                        <td>@item.Address</td>
+                        <td>@item.Email</td>
+                        <td>@item.DateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                       
+                        <td>
+                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteItem(currentItem.ID)">Delete</button>
+                            <button class="btn btn-primary btn-sm" @onclick="() => PrintItem(currentItem.ID)">Print</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No records found.</p>
+    }
+}
+
+
+
+@code {
+    public string connectionString = "Data Source=DESKTOP-PPDFD4L;Initial Catalog=GoldBlazor;Integrated Security=True";
+    // Track the selected item for editing
+    private class StoreItem
+    {
+        public int ID { get; set; }
+        public string? CName { get; set; }
+        public int CPhone { get; set; }
+        public int CPhoneLand { get; set; }
+        public string? Address { get; set; }
+        public string? Email { get; set; }
+        public DateTime DateTime { get; set; }
+       
+    }
+
+    private StoreItem newItem = new StoreItem();
+
+    //private bool ValidateForm()
+    //{
+
+    //    if (string.IsNullOrWhiteSpace(newItem.CName) ||
+    //        string.IsNullOrWhiteSpace(newItem.Items) ||
+    //        string.IsNullOrWhiteSpace(newItem.No) ||
+    //        newItem.Weight <= 0 ||
+    //        newItem.Karat <= 0 ||
+    //        newItem.DateTime == default)
+    //    {
+    //        return false;
+    //    }
+
+    //    return true;
+    //}
+    private List<StoreItem> items;
+    private List<StoreItem> filteredItems;
+    private string searchText;
+    private DateTime? filterDate;
+    private bool isDeleted = false;
+
+    private void FilterRecords()
+    {
+        filteredItems = items.Where(item =>
+            (string.IsNullOrEmpty(searchText) || item.CName.Contains(searchText)) &&
+            (filterDate == null || item.DateTime.Date == filterDate.Value.Date))
+            .ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllRecords();
+    }
+
+    private async Task GetAllRecords()
+    {
+        // Replace "YourDatabaseConnection" with your actual database connection string
+        using (var connection = new SqlConnection(connectionString))
+        {
+            await connection.OpenAsync();
+
+            using (var command = new SqlCommand("GetAllCusromerRecords", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    items = new List<StoreItem>();
+
+                    while (await reader.ReadAsync())
+                    {
+                        var item = new StoreItem
+                            {
+                                ID = reader.GetInt32("ID"),
+                                CName = reader.GetString("CName"),
+                                CPhone = reader.GetInt32("CPhone"),
+                                CPhoneLand = reader.GetInt32("CPhoneLand"),
+                                Address = reader.GetString("Address"),
+                                Email = reader.GetString("Email"),
+                                DateTime = reader.GetDateTime("DateTime"),
+                               
+                            };
+
+                        items.Add(item);
+                    }
+                }
+            }
+        }
+        ApplyFilters();
+
+    }
+
+    private void ClearFilters()
+    {
+        searchText = string.Empty;
+        filterDate = null;
+        FilterRecords();
+    }
+    private void ApplyFilters()
+    {
+        filteredItems = items;
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            filteredItems = filteredItems.Where(item =>
+                item.CName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                item.CPhone.ToString().Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                 item.CPhoneLand.ToString().Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                  item.Address.ToString().Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                item.Email.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+            ).ToList();
+        }
+
+        if (filterDate.HasValue)
+        {
+            filteredItems = filteredItems.Where(item =>
+                item.DateTime.Date == filterDate.Value.Date
+            ).ToList();
+        }
+    }
+
+    private async Task DeleteItem(int itemId)
+    {
+
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this item?");
+
+        if (confirmed)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("DeleteCustomerRecord", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Id", itemId);
+
+                    // Execute the command
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            isDeleted = true;
+
+
+            await Task.Delay(3000);
+
+            Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+        }
+    }
+
+    [Inject]
+    private IJSRuntime JS { get; set; }
+
+    private async Task PrintItem(int id)
+    {
+        Navigation.NavigateTo($"/shopitemmanagement/print?id={id}");
+        //await JS.InvokeAsync<object>("open", "/shopitemmanagement/print" , "_blank");
+        //await JS.InvokeVoidAsync("print");
+    }
+
+    private async Task NewCustomer()
+    {
+        Navigation.NavigateTo("/customerRecord/Customer");
+    }
+
+}

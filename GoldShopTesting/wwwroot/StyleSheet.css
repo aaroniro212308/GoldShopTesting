@@ -1,0 +1,79 @@
+﻿
+@page {
+    size: A5;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.address img {
+    max-width: 100%;
+    height: auto;
+}
+
+.address p {
+    margin-bottom: 10px;
+}
+
+article {
+    margin-bottom: 40px;
+}
+
+.meta th {
+    text-align: left;
+}
+
+.inventory th,
+.inventory td {
+    text-align: center;
+}
+
+.balance th {
+    text-align: right;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.cut {
+    color: #f00;
+    cursor: pointer;
+}
+
+aside {
+    margin-top: 40px;
+}
+
+h1 span[contenteditable] {
+    border-bottom: 1px dashed black;
+    cursor: text;
+}
+
+div[contenteditable] {
+    border: 1px solid black;
+    padding: 5px;
+    min-height: 50px;
+}
+
+@media (max-width: 767px) {
+    .address img {
+        height: auto;
+        width: 100%;
+    }
+}
+
+
