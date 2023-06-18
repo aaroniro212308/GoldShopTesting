@@ -1,6 +1,12 @@
 ﻿@page "/"
 @inherits LayoutComponentBase
 
+@using System.Linq
+
+@using System.Data;
+@using System.Data.SqlClient
+@inject NavigationManager Navigation
+
 <style>
     h1 {
         text-align: left;
@@ -46,25 +52,76 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <div class="rectangle-box">
+            <div class="rectangle-box" @onclick="GoToCustomersPage">
                 <i class="icon fas fa-users"></i>
                 <span class="count">@customerCount</span>
                 <span>Customers</span>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="rectangle-box">
+            <div class="rectangle-box" @onclick="GoToGoldReportsPage">
                 <i class="icon fas fa-chart-line"></i>
                 <span class="count">@goldReportsCount</span>
                 <span>Gold Reports</span>
             </div>
         </div>
     </div>
+
 </div>
 
 
 
 @code {
-    private int customerCount = 100; // Replace with the actual count of customers
-    private int goldReportsCount = 50; // Replace with the actual count of gold reports
+    private int reportsCount;
+
+    protected override void OnInitialized()
+    {
+        goldReportsCount = GetReportsCount();
+        customerCount =GetCustomerCount();  
+    }
+
+    public string connectionString = "Data Source=DESKTOP-PPDFD4L;Initial Catalog=GoldBlazor;Integrated Security=True";
+
+    private int customerCount ; // Replace with the actual count of customers
+    private int goldReportsCount ; // Replace with the actual count of gold reports
+
+    private void GoToCustomersPage()
+    {
+        Navigation.NavigateTo("/customerRecord");
+    }
+
+    private void GoToGoldReportsPage()
+    {
+        Navigation.NavigateTo("/shopitemmanagement");
+    }
+
+    public int GetReportsCount()
+    {
+        using (var connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            var command = new SqlCommand("GetGoldReportsCount", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            return (int)command.ExecuteScalar();
+        }
+    }
+
+    public int GetCustomerCount()
+    {
+        using (var connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            var command = new SqlCommand("GetCustomerCount", connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            return (int)command.ExecuteScalar();
+        }
+    }
+
+
+   
+
+
+
 }

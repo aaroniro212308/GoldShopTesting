@@ -2,5 +2,5 @@
 {
     $(".hideOnPrint").hide();
     window.print();
-    $(".hideOnPrint").show();
+   
 }
