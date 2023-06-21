@@ -9,7 +9,6 @@
 @using System.Data;
 @using System.Data.SqlClient
 @inject NavigationManager Navigation
-
 @inject IJSRuntime JSRuntime
 @using Microsoft.AspNetCore.Components.Web
 @using Append.Blazor.Printing
@@ -21,54 +20,62 @@
 </style>
 <style type="text/css">
 
+       
 
 
-    body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 0px;
-        gap: 77px;
-        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-        font-weight: 400;
-        color: rgb(16, 53, 100);
-        margin: 0%;
-        background-color: #f7fcff;
-    }
+        body
+        {
+            display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 0px;
+                gap: 77px;
+                font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+                font-weight: 400;
+                color: rgb(16, 53, 100);
+                margin: 0%;
+                background-color: #f7fcff;
+        }
 
-    p {
-        font-family: Arial, Helvetica, sans-serif;
-        line-height: 16px;
-        font-size: 10px;
-        margin: 0;
-        width: fit-content;
-    }
+        p
+        {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 16px;
+            font-size: 10px;
+            margin: 0;
+            width: fit-content;
+        }
+        .container
+        {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            gap: 24px;
+            margin-top: 20px;
+            width: 466px;
+            height: 648.75px;
+            border: 1px #080B4B;
+            background-color: #eff7ff;
+            
 
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 16px;
-        gap: 24px;
-        margin-top: 20px;
-        width: 466px;
-        height: 648.75px;
-        border: 1px #080B4B;
-        background-color: #eff7ff;
-    }
+        }
+        /*img{
+            width: 160px;
+        }*/
 
-   
-
-    .head {
+        .head
+        {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
         padding: 0px;
-        width: 100%;
-    }
+            width:  100%;
+        }
 
-    .text {
+        .text
+        {
         font-weight: 600;
         font-style: normal;
         font-family: 'DM Sans';
@@ -76,100 +83,122 @@
         font-size: 10px;
         line-height: 12px;
         color: #0D13C1;
-    }
-
-    .line {
-        width: 100%;
-        height: 2px;
-        background-color: #0D13C1;
-    }
-
-    .address {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding: 0px;
-        gap: 168px;
-    }
-
-    .seperator {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    form {
-        display: block;
-        flex-direction: column;
-        gap: 4px;
-        width: 100%;
-    }
-
-
-    .form {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding: 0px;
-        width: 100%;
-        height: auto;
-        font-size: 10px;
-        color: #0D13C1;
-    }
-
-    .title {
-        width: fit-content;
-        height: 18px;
-        color: #0D13C1;
-        font-style: normal;
-        font-weight: 400;
-        font-size: 20px;
-        line-height: 10px;
-        margin: 0%;
-    }
-
-    .right {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        align-items: flex-end;
-    }
-
-    .left {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        align-items: flex-end;
-    }
-
-    input {
-        border-radius: 3px;
-        border-color: white;
-        border-style: none;
-        background-color: #d8d8d8;
-        max-width: 120px;
-    }
-
-    .table {
-        width: 466px;
-        height: 412px;
-        background: #D9D9D9;
-        border-radius: 4px;
-    }
-
-    .footer {
-        background: #080B4B;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-        .footer p {
-            color: #d8d8d8;
         }
+
+        .line
+        {
+            width: 100%;
+            height: 2px;
+            background-color: #0D13C1;
+        }
+
+        .address
+        {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0px;
+            gap: 30px;
+        }
+        
+        .seperator
+        {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        }
+
+        form
+        {
+            
+            display: block;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+        }
+
+
+        .form
+        {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0px;
+            
+
+            width: 100%;
+            height: auto;
+            font-size: 10px;
+            color: #0D13C1;
+           
+            
+
+        }
+        label{
+            display:inline-block;
+            min-width:40px;
+        }
+        .title
+        {
+            width: fit-content;
+            height: 18px;
+            color: #0D13C1;
+            
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 10px;
+            margin: 0%;
+            }
+
+            .right
+            {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                align-items: flex-end;
+            }
+
+            .left
+            {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                align-items: flex-start;
+            }
+        input
+        {
+            border-radius: 3px;
+            border-color: white;
+            border-style: none;
+            background-color: #d8d8d8;
+            max-width: 120px;
+            color:#0D13C1
+        }
+
+        .table
+        {
+         width: 466px;
+        height: 412px;
+
+        background: #D9D9D9;
+        border-radius: 4px;   
+         }
+
+         .footer
+         {
+            background: #080B4B;
+            width: 100%;
+            display: flex;
+        justify-content: center;
+         }
+
+         .footer p {
+            color: #d8d8d8;
+         }
 
     table {
         font-size: 75%;
@@ -204,6 +233,9 @@
     td {
         border-color: #DDD;
     }
+
+    
+
 </style>
 
 
@@ -219,22 +251,30 @@
 <body>
     <div class="container">
         <div class="head">
-            <img src="unnamed.png"  width="400px" height="100px" alt="logo">
-
+            <img src="unnamed.png" width="170px" alt="logo">
+           
+            
         </div>
         <div class="seperator">
 
             <div class="address">
-                <div><p>Building num - No 240, Kasthuriar Road,Jaffna</p></div>
-                <div><p>0212214801 / 07777888215</p></div>
+                
+                <div><p>No. 240, Kasthuriar Road, Jaffna.</p></div>
+               
+                <div>
+                    <p>
+                        0212214801 0777888215
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        எண். 240, கஸ்தூரியார் வீதி, யாழ்ப்பாணம்.
+                    </p>
+                </div>
             </div>
             <div class="line">
             </div>
         </div>
-
-        <p class="title">Shree Diamond House</p>
-
-
 
         <form action="">
             <div class="form">
@@ -243,7 +283,7 @@
                     var currentItem = item;
                     <div class="left">
                         <div>
-                            <label for="name">Date:</label>
+                            <label  for="name">Date:</label>
                             <input type="name" @bind="@item.DateTime">
                         </div>
 

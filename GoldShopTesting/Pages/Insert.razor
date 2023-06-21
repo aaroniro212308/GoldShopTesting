@@ -98,58 +98,31 @@
         </div>
         <div class="col-sm-6">
             <div class="form-group">
-                <label for="au">Au:</label>
-                <input id="au" type="number" class="form-control" @bind="@newItem.Au" step="0.01" />
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="form-group">
                 <label for="silver">Silver:</label>
                 <input id="silver" type="number" class="form-control" @bind="@newItem.Silver" step="0.01" />
             </div>
         </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="ag">Ag:</label>
-                <input id="ag" type="number" class="form-control" @bind="@newItem.Ag" step="0.01" />
-            </div>
-        </div>
-       
     </div>
 
     <div class="row">
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="zinc">Zinc:</label>
-                <input id="zinc" type="number" class="form-control" @bind="@newItem.Zinc" step="0.01" />
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="zn">Zn:</label>
-                <input id="zn" type="number" class="form-control" @bind="@newItem.Zn" step="0.01" />
-            </div>
-        </div>
-    </div>
 
-    <div class="row">
-       
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="palladium">Palladium:</label>
                 <input id="palladium" type="number" class="form-control" @bind="@newItem.Palladium" step="0.01" />
             </div>
         </div>
+
         <div class="col-sm-6">
             <div class="form-group">
-                <label for="pi">Pi:</label>
-                <input id="pi" type="number" class="form-control" @bind="@newItem.Pi" step="0.01" />
+                <label for="zinc">Zinc:</label>
+                <input id="zinc" type="number" class="form-control" @bind="@newItem.Zinc" step="0.01" />
             </div>
         </div>
+
     </div>
+
+   
 
     <div class="row">
         
@@ -158,31 +131,18 @@
                 <label for="copper">Copper:</label>
                 <input id="copper" type="number" class="form-control" @bind="@newItem.Copper" step="0.01" />
             </div>
+            
         </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="cu">Cu:</label>
-                <input id="cu" type="number" class="form-control" @bind="@newItem.Cu" step="0.01" />
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="cadmium">Cadmium:</label>
                 <input id="cadmium" type="number" class="form-control" @bind="@newItem.Cadmium" step="0.01" />
             </div>
         </div>
-        
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="cd">Cd:</label>
-                <input id="cd" type="number" class="form-control" @bind="@newItem.Cd" step="0.01" />
-            </div>
-        </div>
+       
     </div>
 
+    
     <div class="form-group row">
         <div class="col-sm-12">
             <button type="button" class="btn btn-primary" @onclick="InsertData">Add Item</button>
@@ -227,6 +187,7 @@
         public decimal Cu { get; set; }
         public decimal Zn { get; set; }
         public decimal Cd { get; set; }
+       
     }
     private StoreItem newItem = new StoreItem();
    
